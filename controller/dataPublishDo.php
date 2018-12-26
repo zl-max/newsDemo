@@ -28,11 +28,12 @@ if(!empty($_POST['tittle']) && !empty($_POST['content']))
 
 	if($result)
 	{
-		echo "<a style='margin:40%' href='../newslist.php'>添加数据成功,点击我返回文章列表</a>";
+		$msg="<a href='../newslist.php'>添加成功,返回文章列表</a>";
 	}else{
-		echo "<a style='margin:40%' href='../newslist.php'>添加数据失败,点击我返回文章列表</a>";
+		$msg="<a href='../newslist.php'>添加失败,返回文章列表</a>";
 	}
-
+	$newsadd="<a href='../dataPublish.php'>添加新数据</a>";
+	echo $msg." || ".$newsadd;
 	//释放数据库连接
 	$conn=null;
 }else{
