@@ -44,7 +44,7 @@
 			list($key,$value)=each($arr);
 			$count = $value;
 			$pageSize=20;
-			$page=floor(($count/$pageSize)+1);  // 总页数
+			$page=($count%$pageSize==0)?($count/$pageSize):floor(($count/$pageSize)+1);  // 总页数
 			// echo $page;
 			if(isset($_GET['page'])){
 				if($_GET['page']<=1){    // 输入的页数小于1或者为负时，当前页为第一页
@@ -64,7 +64,7 @@
 
             // echo $sql2;
 			$result=$conn->query($sql2);
-			$serial_num=1;
+			$serial_num=$start<=0?1:$start+1;
 			while($resarr=$result->fetch()){
 			?>
 				<tr>
