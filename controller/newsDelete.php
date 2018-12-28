@@ -10,14 +10,14 @@
 // +----------------------------------------------------------------------
 header('content-type:text/html;charset=utf-8');
 include '../Db/Db.php';
-$id=$_GET['id'];
+$id=$_POST['ids'];
 if(isset($id)){
 	$sql="delete from news where id=$id";
 	$res=$conn->query($sql);
 	if(!$res){
-		echo "<script> alert('删除失败！');window.location.href='../newslist.php' </script>";
+		echo "删除失败！";	
 	}else{
-		echo "<script> alert('删除成功！');window.location.href='../newslist.php' </script>";
+		echo "删除成功！";
 	}
 }
 

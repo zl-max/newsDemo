@@ -14,8 +14,84 @@
 		}
 		a{
 			text-decoration: none;
+			cursor: pointer;
 		}
 	</style>
+	<script type="text/javascript">
+		// 封装一个ajax函数
+		function ajax(options){
+			options=options||{};  // 参数是否为空
+			options.type=(options.type||"get").toUpperCase();  // 请求方式
+			options.dataType=options.dataType||"json";
+			// GET请求后面所跟的参数
+			var params=createParams(options.data);
+
+			//document.write(options.type);
+			document.write(params);
+			return;
+			//创建连接对象
+			//IE6以上
+			if(window.XMLHttpRequest){
+				var xhr = new XMLHttpRequest();
+			}
+			else  // ie6以下版本
+			{
+				var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+
+			
+			// 接收
+			xhr.onreadystatechange=function(){
+				if(xhr.readyState==4 && xhr.status==200 ||xhr.status==304)
+				{
+					options.success && options.success(xhr.responseText,xhr.responseXML);
+				}
+			}
+
+			//连接和发送请求
+			if(options.type=="GET"){
+				xhr.open("GET",options.url+"?"+params,true);
+				xhr.send(null);
+			}else{
+				xhr.open("POST",options.url,true);
+				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xhr.send(params);
+			}
+		}
+
+
+		// 封装GET请求后面跟的参数
+		function createParams(par){
+			var arr=[];
+			for(var name in par){
+				arr.push(name+"="+par[name]);
+			}
+			//arr.push(("v="+Math.random()).replace(".",""));
+			return arr.join("&");
+		}
+
+		function del(id){
+			var status=window.confirm("确定要删除数据？");
+			if(true==status){
+					ajax({
+					url:"controller/newsDelete.php",
+					type:"post",
+					data:{ids:id},
+					dataType:"json",
+					success:function(response,xml){
+						// 删除成功执行的代码
+						alert(response);
+						location.reload();
+					},
+					fail : function(status){
+						// 执行失败的代码
+						alert(status);
+					}
+				});
+				//  alert("删除成功勒");
+			}
+		}
+	</script>
 </head>
 <body>
 	<!-- 搜索框 -->
@@ -72,7 +148,7 @@
 					<td><?php echo $resarr['tittle'] ?></td>
 					<td><?php echo $resarr['content'] ?></td>
 					<td><?php echo $resarr['insert_dt'] ?></td>
-					<td><a href="controller/newsEdit.php?id=<?php echo $resarr['id'] ?>">编辑</a>&nbsp;&nbsp;<a href="controller/newsDelete.php?id=<?php echo $resarr['id'] ?>">删除</a></td>
+					<td><a href="controller/newsEdit.php?id=<?php echo $resarr['id'] ?>">编辑</a>&nbsp;&nbsp;<a id="del" onclick="del(<?php echo $resarr['id'] ?>)" >删除</a></td>
 				</tr>
 			<?php
 				$serial_num++;
@@ -86,8 +162,7 @@
 		<a href="newslist.php?search=<?php echo $search ?>&page=<?php echo $currentPage-1 ?>" style="color: red">|上一页</a>
 		<a href="newslist.php?search=<?php echo $search ?>&page=<?php echo $currentPage+1 ?>" style="color: red">|下一页</a>
 		<a href="newslist.php?search=<?php echo $search ?>&page=<?php echo $page ?>" style="color: red">|末页</a>
-		当前第<?php echo $currentPage ?>页|
-		共<?php echo $page ?>页(<?php echo  $count ?>条记录)
+		当前<?php echo $currentPage ?>/<?php echo $page ?>页(<?php echo  $count ?>条记录)
 		
 	</p>
 </body>
